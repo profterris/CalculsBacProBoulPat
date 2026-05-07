@@ -1,0 +1,1398 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calculs de gestion – Bac Pro Boulanger Pâtissier U.31</title>
+<style>
+  :root {
+    --cream: #fdf8f0;
+    --wheat: #e8d5b0;
+    --brown-dark: #3b2510;
+    --brown-mid: #7a4f2e;
+    --brown-light: #b07a4a;
+    --gold: #c9952a;
+    --gold-light: #f5d98a;
+    --green: #3a6b3a;
+    --green-light: #d4edd4;
+    --red: #8b2020;
+    --red-light: #f5d5d5;
+    --blue: #1a3a6b;
+    --blue-light: #d5e4f5;
+    --orange: #b05a10;
+    --orange-light: #fde8d0;
+    --shadow: 0 2px 8px rgba(59,37,16,0.12);
+    --radius: 10px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Georgia', 'Times New Roman', serif;
+    background: var(--cream);
+    color: var(--brown-dark);
+    line-height: 1.7;
+  }
+
+  /* ── Header ── */
+  header {
+    background: var(--brown-dark);
+    color: var(--cream);
+    padding: 0;
+    position: relative;
+    overflow: hidden;
+  }
+  .header-inner {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 2.5rem 1.5rem 2rem;
+    position: relative;
+    z-index: 1;
+  }
+  .header-tag {
+    font-family: 'Courier New', monospace;
+    font-size: .78rem;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--gold-light);
+    margin-bottom: .5rem;
+  }
+  header h1 {
+    font-size: clamp(1.5rem, 4vw, 2.2rem);
+    font-weight: normal;
+    line-height: 1.25;
+    margin-bottom: .4rem;
+  }
+  header h1 strong { color: var(--gold-light); }
+  .header-sub {
+    font-size: .9rem;
+    color: #c5b090;
+    font-style: italic;
+  }
+  .header-grain {
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60'%3E%3Ccircle cx='30' cy='10' r='1.5' fill='%23ffffff08'/%3E%3Ccircle cx='10' cy='30' r='1' fill='%23ffffff06'/%3E%3Ccircle cx='50' cy='45' r='1.5' fill='%23ffffff05'/%3E%3Ccircle cx='20' cy='55' r='1' fill='%23ffffff07'/%3E%3C/svg%3E");
+  }
+
+  /* ── Nav pills ── */
+  nav {
+    background: var(--brown-mid);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 6px rgba(0,0,0,.25);
+  }
+  .nav-inner {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: .5rem 1rem;
+    display: flex;
+    gap: .5rem;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .nav-inner::-webkit-scrollbar { display: none; }
+  .nav-pill {
+    flex-shrink: 0;
+    background: none;
+    border: 1.5px solid rgba(255,255,255,.3);
+    border-radius: 20px;
+    color: var(--cream);
+    padding: .3rem .9rem;
+    font-size: .82rem;
+    cursor: pointer;
+    transition: background .2s, border-color .2s;
+    font-family: inherit;
+    white-space: nowrap;
+  }
+  .nav-pill:hover, .nav-pill.active {
+    background: var(--gold);
+    border-color: var(--gold);
+    color: var(--brown-dark);
+    font-weight: bold;
+  }
+
+  /* ── Main layout ── */
+  main {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 2rem 1rem 4rem;
+  }
+
+  /* ── Sections (tabs) ── */
+  .section { display: none; }
+  .section.active { display: block; }
+
+  /* ── Part title ── */
+  .part-label {
+    font-family: 'Courier New', monospace;
+    font-size: .72rem;
+    letter-spacing: .15em;
+    text-transform: uppercase;
+    color: var(--brown-light);
+    margin-bottom: .3rem;
+  }
+  .part-title {
+    font-size: clamp(1.2rem, 3vw, 1.65rem);
+    font-weight: normal;
+    color: var(--brown-dark);
+    margin-bottom: 1.5rem;
+    border-bottom: 2px solid var(--wheat);
+    padding-bottom: .5rem;
+  }
+  .part-title span { color: var(--gold); }
+
+  /* ── Analogy box ── */
+  .story-box {
+    background: #fff8ec;
+    border-left: 4px solid var(--gold);
+    border-radius: 0 var(--radius) var(--radius) 0;
+    padding: 1.2rem 1.4rem;
+    margin: 1.2rem 0;
+    box-shadow: var(--shadow);
+  }
+  .story-box .story-icon { font-size: 2.2rem; margin-bottom: .4rem; }
+  .story-box p { margin-bottom: .6rem; }
+  .story-box p:last-child { margin-bottom: 0; }
+  .story-box strong { color: var(--gold); }
+  .story-box em { color: var(--brown-mid); }
+
+  .scenario-result {
+    display: flex;
+    gap: 1rem;
+    margin: 1rem 0;
+    flex-wrap: wrap;
+  }
+  .scenario-card {
+    flex: 1;
+    min-width: 200px;
+    border-radius: var(--radius);
+    padding: .9rem 1rem;
+    font-size: .92rem;
+  }
+  .scenario-card.ok { background: var(--green-light); border: 2px solid var(--green); }
+  .scenario-card.ko { background: var(--red-light); border: 2px solid var(--red); }
+  .scenario-card strong { display: block; font-size: 1.05rem; margin-bottom: .3rem; }
+
+  .highlight-q {
+    background: var(--orange-light);
+    border: 2px solid var(--orange);
+    border-radius: var(--radius);
+    padding: 1rem 1.2rem;
+    margin: 1rem 0;
+    font-size: 1rem;
+  }
+  .highlight-q strong { color: var(--orange); font-size: 1.1rem; }
+
+  /* ── Method boxes ── */
+  .method-flow {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin: 1.2rem 0;
+  }
+  .method-step {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: .9rem 1.1rem;
+    border-radius: var(--radius);
+    background: white;
+    border: 1.5px solid var(--wheat);
+    box-shadow: var(--shadow);
+    position: relative;
+  }
+  .method-step + .method-step { margin-top: -1px; border-radius: 0; }
+  .method-step:first-child { border-radius: var(--radius) var(--radius) 0 0; }
+  .method-step:last-child { border-radius: 0 0 var(--radius) var(--radius); background: var(--brown-dark); color: var(--cream); border-color: var(--brown-dark); }
+  .method-step:last-child .step-formula { color: var(--gold-light); }
+  .step-num {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    background: var(--gold);
+    color: var(--brown-dark);
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: .9rem;
+  }
+  .step-body { flex: 1; }
+  .step-title { font-weight: bold; margin-bottom: .2rem; }
+  .step-formula {
+    font-family: 'Courier New', monospace;
+    font-size: .88rem;
+    color: var(--brown-mid);
+    background: var(--cream);
+    padding: .2rem .5rem;
+    border-radius: 4px;
+    display: inline-block;
+    margin-top: .2rem;
+  }
+  .method-step:last-child .step-num { background: var(--gold); }
+
+  .arrow-down {
+    text-align: center;
+    color: var(--brown-light);
+    font-size: 1.4rem;
+    line-height: 1;
+    margin: -2px auto;
+    position: relative;
+    z-index: 2;
+  }
+
+  /* ── Formula cards ── */
+  .formula-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1rem;
+    margin: 1.2rem 0;
+  }
+  .formula-card {
+    background: white;
+    border: 2px solid var(--wheat);
+    border-radius: var(--radius);
+    padding: 1rem 1.1rem;
+    box-shadow: var(--shadow);
+  }
+  .formula-card .fc-label {
+    font-size: .75rem;
+    text-transform: uppercase;
+    letter-spacing: .1em;
+    color: var(--brown-light);
+    margin-bottom: .3rem;
+  }
+  .formula-card .fc-formula {
+    font-family: 'Courier New', monospace;
+    font-size: 1rem;
+    color: var(--blue);
+    font-weight: bold;
+  }
+  .formula-card .fc-note {
+    font-size: .82rem;
+    color: #666;
+    margin-top: .4rem;
+    font-style: italic;
+  }
+
+  /* ── Warning ── */
+  .warn {
+    background: #fff3cd;
+    border: 2px solid #e6a817;
+    border-radius: var(--radius);
+    padding: .9rem 1.1rem;
+    margin: 1rem 0;
+    font-size: .9rem;
+  }
+  .warn strong { color: #8a5f00; }
+  .tip {
+    background: var(--blue-light);
+    border: 2px solid var(--blue);
+    border-radius: var(--radius);
+    padding: .9rem 1.1rem;
+    margin: 1rem 0;
+    font-size: .9rem;
+  }
+  .tip strong { color: var(--blue); }
+
+  /* ── Exercise cards ── */
+  .exercise-card {
+    background: white;
+    border: 2px solid var(--wheat);
+    border-radius: var(--radius);
+    margin-bottom: 1.8rem;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+  }
+  .exercise-header {
+    padding: 1rem 1.2rem .8rem;
+    border-bottom: 2px solid var(--wheat);
+    display: flex;
+    align-items: flex-start;
+    gap: .8rem;
+  }
+  .ex-badge {
+    font-size: .72rem;
+    font-family: 'Courier New', monospace;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    padding: .2rem .6rem;
+    border-radius: 4px;
+    flex-shrink: 0;
+    margin-top: .15rem;
+  }
+  .badge-easy { background: var(--green-light); color: var(--green); border: 1px solid var(--green); }
+  .badge-hard { background: var(--orange-light); color: var(--orange); border: 1px solid var(--orange); }
+  .badge-exam { background: var(--red-light); color: var(--red); border: 1px solid var(--red); }
+  .ex-title { font-size: 1rem; font-weight: bold; color: var(--brown-dark); }
+  .ex-context { font-size: .88rem; color: var(--brown-mid); margin-top: .15rem; }
+  .exercise-body { padding: 1.1rem 1.2rem; }
+
+  /* context narrative */
+  .scenario-text {
+    background: var(--cream);
+    border-left: 3px solid var(--wheat);
+    padding: .8rem 1rem;
+    margin-bottom: 1rem;
+    border-radius: 0 6px 6px 0;
+    font-size: .92rem;
+  }
+  .scenario-text p { margin-bottom: .4rem; }
+
+  /* data table */
+  .data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: .88rem;
+    margin: .6rem 0 1rem;
+  }
+  .data-table th {
+    background: var(--brown-dark);
+    color: var(--cream);
+    padding: .4rem .7rem;
+    text-align: left;
+    font-weight: normal;
+    font-size: .8rem;
+    letter-spacing: .05em;
+  }
+  .data-table td {
+    padding: .4rem .7rem;
+    border-bottom: 1px solid var(--wheat);
+  }
+  .data-table tr:last-child td { border-bottom: none; }
+  .data-table tr:nth-child(even) td { background: #fdf5e6; }
+  .data-table .calc-col { font-family: 'Courier New', monospace; color: var(--brown-mid); }
+
+  /* questions */
+  .question-block {
+    background: #fdf5e6;
+    border: 1.5px solid var(--wheat);
+    border-radius: 8px;
+    padding: .8rem 1rem;
+    margin-bottom: .8rem;
+  }
+  .question-label {
+    font-size: .78rem;
+    text-transform: uppercase;
+    letter-spacing: .1em;
+    color: var(--brown-light);
+    margin-bottom: .3rem;
+    font-family: 'Courier New', monospace;
+  }
+  .question-text {
+    font-size: .93rem;
+    margin-bottom: .6rem;
+    color: var(--brown-dark);
+  }
+  .answer-row {
+    display: flex;
+    align-items: center;
+    gap: .6rem;
+    flex-wrap: wrap;
+  }
+  .answer-input {
+    font-family: 'Courier New', monospace;
+    font-size: 1rem;
+    padding: .4rem .6rem;
+    border: 2px solid var(--wheat);
+    border-radius: 6px;
+    width: 130px;
+    background: white;
+    color: var(--brown-dark);
+    transition: border-color .2s;
+  }
+  .answer-input:focus { outline: none; border-color: var(--gold); }
+  .answer-unit { font-size: .85rem; color: var(--brown-light); }
+  .answer-feedback {
+    font-size: .85rem;
+    margin-top: .4rem;
+    padding: .3rem .6rem;
+    border-radius: 5px;
+    display: none;
+  }
+  .answer-feedback.ok { background: var(--green-light); color: var(--green); display: block; }
+  .answer-feedback.ko { background: var(--red-light); color: var(--red); display: block; }
+
+  /* buttons */
+  .btn-row {
+    display: flex;
+    gap: .6rem;
+    margin-top: .8rem;
+    flex-wrap: wrap;
+  }
+  .btn {
+    padding: .45rem 1rem;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: .88rem;
+    font-weight: bold;
+    transition: opacity .2s, transform .1s;
+  }
+  .btn:hover { opacity: .88; transform: translateY(-1px); }
+  .btn:active { transform: translateY(0); }
+  .btn-check { background: var(--gold); color: var(--brown-dark); }
+  .btn-reveal { background: var(--cream); color: var(--brown-mid); border: 2px solid var(--wheat); }
+  .btn-reset { background: #e0e0e0; color: #555; }
+
+  /* correction table */
+  .correction-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: .85rem;
+    margin-top: .8rem;
+    display: none;
+  }
+  .correction-table.visible { display: table; }
+  .correction-table th {
+    background: var(--green);
+    color: white;
+    padding: .4rem .7rem;
+    text-align: left;
+    font-weight: normal;
+    font-size: .78rem;
+  }
+  .correction-table td {
+    padding: .4rem .7rem;
+    border-bottom: 1px solid #cce8cc;
+  }
+  .correction-table tr:last-child td {
+    background: var(--green-light);
+    font-weight: bold;
+    border-top: 2px solid var(--green);
+  }
+  .correction-table .calc-op { font-family: 'Courier New', monospace; color: #555; }
+  .ok-badge { color: var(--green); font-weight: bold; }
+  .ko-badge { color: var(--red); font-weight: bold; }
+
+  /* conclusion phrase */
+  .conclusion-box {
+    background: var(--brown-dark);
+    color: var(--cream);
+    border-radius: var(--radius);
+    padding: 1rem 1.2rem;
+    margin: 1.2rem 0;
+    font-size: .9rem;
+  }
+  .conclusion-box strong { color: var(--gold-light); }
+  .conclusion-box em { color: #c5b090; }
+
+  /* ── TVA section ── */
+  .tva-schema {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: .8rem;
+    margin: 1.2rem 0;
+    text-align: center;
+  }
+  @media (max-width: 560px) { .tva-schema { grid-template-columns: 1fr; } }
+  .tva-block {
+    border-radius: var(--radius);
+    padding: .9rem .7rem;
+    font-size: .88rem;
+    border: 2px solid;
+  }
+  .tva-block .tva-icon { font-size: 1.8rem; margin-bottom: .3rem; }
+  .tva-block .tva-name { font-weight: bold; margin-bottom: .2rem; }
+  .tva-block .tva-def { font-size: .78rem; color: #555; }
+  .tva-collectee { border-color: var(--orange); background: var(--orange-light); }
+  .tva-deductible { border-color: var(--blue); background: var(--blue-light); }
+  .tva-payer { border-color: var(--green); background: var(--green-light); }
+  .tva-payer .tva-name { color: var(--green); }
+  .tva-collectee .tva-name { color: var(--orange); }
+  .tva-deductible .tva-name { color: var(--blue); }
+
+  /* ── Memo box ── */
+  .memo-box {
+    background: var(--brown-dark);
+    color: var(--cream);
+    border-radius: var(--radius);
+    padding: 1rem 1.2rem;
+    margin: 1.2rem 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.2rem;
+    align-items: flex-start;
+  }
+  .memo-item { flex: 1; min-width: 180px; }
+  .memo-item .memo-label { font-size: .72rem; letter-spacing: .12em; text-transform: uppercase; color: var(--gold-light); margin-bottom: .3rem; }
+  .memo-item .memo-formula { font-family: 'Courier New', monospace; font-size: .95rem; color: white; }
+
+  /* ── Rates reminder ── */
+  .rates-row {
+    display: flex;
+    gap: .7rem;
+    flex-wrap: wrap;
+    margin: .8rem 0;
+  }
+  .rate-pill {
+    border-radius: 20px;
+    padding: .35rem .9rem;
+    font-size: .85rem;
+    font-weight: bold;
+    border: 2px solid;
+  }
+  .rate-normal { background: #fff3cd; color: #8a5f00; border-color: #e6a817; }
+  .rate-inter { background: var(--blue-light); color: var(--blue); border-color: var(--blue); }
+  .rate-reduit { background: var(--green-light); color: var(--green); border-color: var(--green); }
+
+  /* ── Footer ── */
+  footer {
+    text-align: center;
+    padding: 2rem 1rem;
+    font-size: .78rem;
+    color: var(--brown-light);
+    border-top: 1px solid var(--wheat);
+    margin-top: 2rem;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-grain" aria-hidden="true"></div>
+  <div class="header-inner">
+    <p class="header-tag">Bac Pro Boulanger Pâtissier – U.31 – S5.4</p>
+    <h1>Les <strong>calculs de gestion</strong><br>de la boulangerie</h1>
+    <p class="header-sub">Paie, TVA et résultat – révisions et entraînement</p>
+  </div>
+</header>
+
+<nav>
+  <div class="nav-inner">
+    <button class="nav-pill active" onclick="showSection('paie-intro',this)">① Comprendre la paie</button>
+    <button class="nav-pill" onclick="showSection('paie-methode',this)">② Méthode bulletin</button>
+    <button class="nav-pill" onclick="showSection('paie-ex1',this)">③ Exercice débutant</button>
+    <button class="nav-pill" onclick="showSection('paie-ex2',this)">④ Exercice examen</button>
+    <button class="nav-pill" onclick="showSection('tva-intro',this)">⑤ Comprendre la TVA</button>
+    <button class="nav-pill" onclick="showSection('tva-methode',this)">⑥ Méthode TVA</button>
+    <button class="nav-pill" onclick="showSection('tva-ex',this)">⑦ Exercice TVA</button>
+    <button class="nav-pill" onclick="showSection('resultat-ex',this)">⑧ Résultat</button>
+    <button class="nav-pill" onclick="showSection('astuce',this)">⑨ Astuces</button>
+  </div>
+</nav>
+
+<main>
+
+<!-- ─── SECTION 1 : intro paie ─── -->
+<div id="paie-intro" class="section active">
+  <p class="part-label">Partie 1</p>
+  <h2 class="part-title">L'analogie <span>du quotidien</span></h2>
+
+  <div class="story-box">
+    <div class="story-icon">🥖</div>
+    <p>Mehdi vient d'être embauché comme boulanger chez <strong>Au Pain Doré</strong>, rue de la République. À la fin du mois, il reçoit un <em>bulletin de paie</em>.</p>
+    <p>Il voit un chiffre en haut : <strong>1 900 €</strong> (son salaire brut). Mais sur son compte en banque, il ne reçoit que <strong>1 504 €</strong>. Pourquoi cette différence ?</p>
+    <p>Parce qu'on lui a prélevé des <strong>cotisations salariales</strong> : c'est sa part de participation à la sécurité sociale, la retraite, l'assurance chômage…</p>
+  </div>
+
+  <div class="scenario-result">
+    <div class="scenario-card ok">
+      <strong>Salaire brut</strong>
+      1 900 € – c'est ce que l'employeur doit au salarié.
+    </div>
+    <div class="scenario-card ok">
+      <strong>Cotisations salariales</strong>
+      ≈ 21–22 % du brut – prélevées avant versement.
+    </div>
+    <div class="scenario-card ok">
+      <strong>Salaire net</strong>
+      Ce que Mehdi reçoit réellement sur son compte.
+    </div>
+  </div>
+
+  <div class="highlight-q">
+    <strong>Ce que l'examen te demandera :</strong><br>
+    À partir d'un bulletin de paie simplifié ou d'un tableau de données, tu devras calculer les cotisations, le salaire net à payer et le coût total pour l'employeur.
+  </div>
+
+  <div class="warn">
+    <strong>⚠️ À ne pas confondre :</strong><br>
+    Le <strong>salaire brut</strong> n'est pas ce que l'employeur dépense vraiment. En plus du brut, l'employeur verse des <strong>cotisations patronales</strong> aux organismes sociaux. Le coût total employeur = salaire brut + cotisations patronales.
+  </div>
+</div>
+
+<!-- ─── SECTION 2 : méthode bulletin ─── -->
+<div id="paie-methode" class="section">
+  <p class="part-label">Partie 2</p>
+  <h2 class="part-title">La méthode <span>en 4 étapes</span></h2>
+
+  <div class="method-flow">
+    <div class="method-step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <div class="step-title">Calculer le salaire brut</div>
+        Taux horaire × nombre d'heures travaillées dans le mois.
+        <span class="step-formula">Brut = taux horaire × heures</span>
+      </div>
+    </div>
+    <div class="arrow-down">↓</div>
+    <div class="method-step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <div class="step-title">Calculer les cotisations salariales</div>
+        Le taux est donné dans le sujet (souvent entre 20 % et 23 %).
+        <span class="step-formula">Cotis. salariales = Brut × taux salarial</span>
+      </div>
+    </div>
+    <div class="arrow-down">↓</div>
+    <div class="method-step">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <div class="step-title">Calculer le salaire net à payer</div>
+        Ce que le salarié reçoit sur son compte bancaire.
+        <span class="step-formula">Net = Brut – Cotisations salariales</span>
+      </div>
+    </div>
+    <div class="arrow-down">↓</div>
+    <div class="method-step">
+      <div class="step-num">4</div>
+      <div class="step-body">
+        <div class="step-title">Calculer le coût total pour l'employeur</div>
+        Le sujet donne le taux patronal (souvent 40–45 % du brut).
+        <span class="step-formula">Coût employeur = Brut + Cotisations patronales</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="formula-grid">
+    <div class="formula-card">
+      <div class="fc-label">Cotisations salariales</div>
+      <div class="fc-formula">Brut × taux</div>
+      <div class="fc-note">Taux donné dans le sujet</div>
+    </div>
+    <div class="formula-card">
+      <div class="fc-label">Salaire net</div>
+      <div class="fc-formula">Brut − Cotis. salariales</div>
+      <div class="fc-note">Reçu sur le compte</div>
+    </div>
+    <div class="formula-card">
+      <div class="fc-label">Cotisations patronales</div>
+      <div class="fc-formula">Brut × taux patronal</div>
+      <div class="fc-note">Payées par l'employeur</div>
+    </div>
+    <div class="formula-card">
+      <div class="fc-label">Coût total employeur</div>
+      <div class="fc-formula">Brut + Cotis. patronales</div>
+      <div class="fc-note">Charge réelle de l'entreprise</div>
+    </div>
+  </div>
+
+  <div class="tip">
+    <strong>💡 Mémo calculatrice :</strong> Pour un taux de 22 %, tape <code>× 0,22</code> ou <code>× 22 ÷ 100</code>.
+  </div>
+</div>
+
+<!-- ─── SECTION 3 : exercice débutant ─── -->
+<div id="paie-ex1" class="section">
+  <p class="part-label">Partie 3</p>
+  <h2 class="part-title">Entraînement <span>niveau 1</span></h2>
+
+  <div class="exercise-card">
+    <div class="exercise-header">
+      <span class="ex-badge badge-easy">Niveau débutant</span>
+      <div>
+        <div class="ex-title">Le bulletin de Mehdi – boulangerie Au Pain Doré</div>
+        <div class="ex-context">Chiffres ronds – formules directes</div>
+      </div>
+    </div>
+    <div class="exercise-body">
+      <div class="scenario-text">
+        <p>Mehdi est boulanger chez <strong>Au Pain Doré</strong>. Il travaille <strong>151,67 heures</strong> ce mois-ci à un taux horaire brut de <strong>12,50 €</strong>.</p>
+        <p>Le taux de cotisations salariales est de <strong>22 %</strong> du salaire brut.</p>
+        <p>Le taux de cotisations patronales est de <strong>42 %</strong> du salaire brut.</p>
+      </div>
+
+      <div class="question-block" id="e1q1">
+        <div class="question-label">Question 1</div>
+        <div class="question-text">Calculez le salaire brut de Mehdi pour ce mois.</div>
+        <div class="answer-row">
+          <input type="number" class="answer-input" id="e1q1-inp" placeholder="0,00" step="0.01">
+          <span class="answer-unit">€ brut</span>
+        </div>
+        <div class="answer-feedback" id="e1q1-fb"></div>
+      </div>
+
+      <div class="question-block" id="e1q2">
+        <div class="question-label">Question 2</div>
+        <div class="question-text">Calculez le montant des cotisations salariales.</div>
+        <div class="answer-row">
+          <input type="number" class="answer-input" id="e1q2-inp" placeholder="0,00" step="0.01">
+          <span class="answer-unit">€</span>
+        </div>
+        <div class="answer-feedback" id="e1q2-fb"></div>
+      </div>
+
+      <div class="question-block" id="e1q3">
+        <div class="question-label">Question 3</div>
+        <div class="question-text">Calculez le salaire net à payer à Mehdi.</div>
+        <div class="answer-row">
+          <input type="number" class="answer-input" id="e1q3-inp" placeholder="0,00" step="0.01">
+          <span class="answer-unit">€ net</span>
+        </div>
+        <div class="answer-feedback" id="e1q3-fb"></div>
+      </div>
+
+      <div class="question-block" id="e1q4">
+        <div class="question-label">Question 4</div>
+        <div class="question-text">Calculez le coût total de Mehdi pour l'employeur.</div>
+        <div class="answer-row">
+          <input type="number" class="answer-input" id="e1q4-inp" placeholder="0,00" step="0.01">
+          <span class="answer-unit">€</span>
+        </div>
+        <div class="answer-feedback" id="e1q4-fb"></div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-check" onclick="checkEx1()">Vérifier mes réponses</button>
+        <button class="btn btn-reveal" onclick="revealEx1()">Voir le corrigé</button>
+        <button class="btn btn-reset" onclick="resetEx1()">Recommencer</button>
+      </div>
+
+      <table class="correction-table" id="correction-ex1">
+        <thead>
+          <tr><th>Calcul</th><th>Opération</th><th>Résultat</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Salaire brut</td><td class="calc-op">151,67 × 12,50</td><td>1 895,88 €</td></tr>
+          <tr><td>Cotisations salariales (22 %)</td><td class="calc-op">1 895,88 × 0,22</td><td>417,09 €</td></tr>
+          <tr><td>Salaire net</td><td class="calc-op">1 895,88 − 417,09</td><td>1 478,79 €</td></tr>
+          <tr><td>Cotisations patronales (42 %)</td><td class="calc-op">1 895,88 × 0,42</td><td>796,27 €</td></tr>
+          <tr><td>① Coût total employeur</td><td class="calc-op">1 895,88 + 796,27</td><td>2 692,15 €</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ─── SECTION 4 : exercice examen ─── -->
+<div id="paie-ex2" class="section">
+  <p class="part-label">Partie 4</p>
+  <h2 class="part-title">Entraînement <span>niveau examen</span></h2>
+
+  <div class="exercise-card">
+    <div class="exercise-header">
+      <span class="ex-badge badge-exam">Niveau examen</span>
+      <div>
+        <div class="ex-title">Tableau de paie – boulangerie Au Pain Doré</div>
+        <div class="ex-context">Plusieurs salariés – calcul du coût total mensuel</div>
+      </div>
+    </div>
+    <div class="exercise-body">
+      <div class="scenario-text">
+        <p>La boulangerie <strong>Au Pain Doré</strong> emploie trois salariés en novembre. Le taux de cotisations salariales est de <strong>22 %</strong> et le taux de cotisations patronales est de <strong>42 %</strong> pour tous.</p>
+      </div>
+
+      <table class="data-table">
+        <thead>
+          <tr><th>Salarié</th><th>Fonction</th><th>Heures</th><th>Taux horaire brut</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Mehdi</td><td>Boulanger</td><td class="calc-col">151,67 h</td><td class="calc-col">12,50 €</td></tr>
+          <tr><td>Yasmine</td><td>Pâtissière</td><td class="calc-col">151,67 h</td><td class="calc-col">13,20 €</td></tr>
+          <tr><td>Théo</td><td>Apprenti</td><td class="calc-col">151,67 h</td><td class="calc-col">7,80 €</td></tr>
+        </tbody>
+      </table>
+
+      <div class="question-block">
+        <div class="question-label">Question 1</div>
+        <div class="question-text">Calculez le salaire brut total des trois salariés pour le mois de novembre.</div>
+        <div class="answer-row">
+          <input type="number" class="answer-input" id="e2q1-inp" placeholder="0,00" step="0.01">
+          <span class="answer-unit">€ brut total</span>
+        </div>
+        <div class="answer-feedback" id="e2q1-fb"></div>
+      </div>
+
+      <div class="question-block">
+        <div class="question-label">Question 2</div>
+        <div class="question-text">Calculez le montant total des cotisations salariales.</div>
+        <div class="answer-row">
+          <input type="number" class="answer-input" id="e2q2-inp" placeholder="0,00" step="0.01">
+          <span class="answer-unit">€</span>
+        </div>
+        <div class="answer-feedback" id="e2q2-fb"></div>
+      </div>
+
+      <div class="question-block">
+        <div class="question-label">Question 3</div>
+        <div class="question-text">Calculez le salaire net total à verser aux trois salariés.</div>
+        <div class="answer-row">
+          <input type="number" class="answer-input" id="e2q3-inp" placeholder="0,00" step="0.01">
+          <span class="answer-unit">€ net total</span>
+        </div>
+        <div class="answer-feedback" id="e2q3-fb"></div>
+      </div>
+
+      <div class="question-block">
+        <div class="question-label">Question 4</div>
+        <div class="question-text">Calculez le coût total mensuel de la masse salariale pour l'employeur.</div>
+        <div class="answer-row">
+          <input type="number" class="answer-input" id="e2q4-inp" placeholder="0,00" step="0.01">
+          <span class="answer-unit">€</span>
+        </div>
+        <div class="answer-feedback" id="e2q4-fb"></div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-check" onclick="checkEx2()">Vérifier mes réponses</button>
+        <button class="btn btn-reveal" onclick="revealEx2()">Voir le corrigé</button>
+        <button class="btn btn-reset" onclick="resetEx2()">Recommencer</button>
+      </div>
+
+      <table class="correction-table" id="correction-ex2">
+        <thead>
+          <tr><th>Calcul</th><th>Opération</th><th>Montant</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Brut Mehdi</td><td class="calc-op">151,67 × 12,50</td><td>1 895,88 €</td></tr>
+          <tr><td>Brut Yasmine</td><td class="calc-op">151,67 × 13,20</td><td>2 002,04 €</td></tr>
+          <tr><td>Brut Théo</td><td class="calc-op">151,67 × 7,80</td><td>1 183,03 €</td></tr>
+          <tr><td>① Brut total</td><td class="calc-op">1 895,88 + 2 002,04 + 1 183,03</td><td>5 080,95 €</td></tr>
+          <tr><td>② Cotisations salariales (22 %)</td><td class="calc-op">5 080,95 × 0,22</td><td>1 117,81 €</td></tr>
+          <tr><td>③ Net total</td><td class="calc-op">5 080,95 − 1 117,81</td><td>3 963,14 €</td></tr>
+          <tr><td>Cotisations patronales (42 %)</td><td class="calc-op">5 080,95 × 0,42</td><td>2 134,00 €</td></tr>
+          <tr><td>④ Coût total employeur</td><td class="calc-op">5 080,95 + 2 134,00</td><td>7 214,95 €</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ─── SECTION 5 : intro TVA ─── -->
+<div id="tva-intro" class="section">
+  <p class="part-label">Partie 5</p>
+  <h2 class="part-title">Comprendre <span>la TVA</span></h2>
+
+  <div class="story-box">
+    <div class="story-icon">🧾</div>
+    <p>La boulangerie <strong>Au Pain Doré</strong> achète de la farine à son fournisseur et vend ses baguettes à ses clients. À chaque étape, la TVA est mentionnée sur les factures.</p>
+    <p>La TVA n'est pas un gain pour la boulangerie : c'est de l'argent collecté pour le compte de l'État, à reverser chaque mois ou trimestre.</p>
+    <p>Le mécanisme est simple : <strong>TVA à payer = TVA collectée − TVA déductible.</strong></p>
+  </div>
+
+  <div class="tva-schema">
+    <div class="tva-block tva-collectee">
+      <div class="tva-icon">📤</div>
+      <div class="tva-name">TVA collectée</div>
+      <div class="tva-def">TVA sur les ventes. Facturée aux clients. La boulangerie la reçoit, mais elle appartient à l'État.</div>
+    </div>
+    <div class="tva-block tva-deductible">
+      <div class="tva-icon">📥</div>
+      <div class="tva-name">TVA déductible</div>
+      <div class="tva-def">TVA sur les achats. Payée aux fournisseurs. L'État la rembourse (en déduction).</div>
+    </div>
+    <div class="tva-block tva-payer">
+      <div class="tva-icon">🏛️</div>
+      <div class="tva-name">TVA à payer</div>
+      <div class="tva-def">Ce que la boulangerie reverse à l'État = collectée − déductible.</div>
+    </div>
+  </div>
+
+  <div class="warn">
+    <strong>⚠️ Les taux en boulangerie-pâtisserie :</strong><br>
+    <div class="rates-row" style="margin-top:.5rem">
+      <span class="rate-pill rate-normal">20 % – taux normal (chocolats, confiseries…)</span>
+      <span class="rate-pill rate-inter">10 % – taux intermédiaire (ventes à consommer sur place)</span>
+      <span class="rate-pill rate-reduit">5,5 % – taux réduit (pain, pâtisseries à emporter, farine…)</span>
+    </div>
+    Le taux appliqué est toujours précisé dans le sujet d'examen.
+  </div>
+
+  <div class="memo-box">
+    <div class="memo-item">
+      <div class="memo-label">Prix TTC → HT</div>
+      <div class="memo-formula">PV HT = PV TTC ÷ (1 + taux)</div>
+    </div>
+    <div class="memo-item">
+      <div class="memo-label">Prix HT → TTC</div>
+      <div class="memo-formula">PV TTC = PV HT × (1 + taux)</div>
+    </div>
+    <div class="memo-item">
+      <div class="memo-label">TVA seule</div>
+      <div class="memo-formula">TVA = PV HT × taux</div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── SECTION 6 : méthode TVA ─── -->
+<div id="tva-methode" class="section">
+  <p class="part-label">Partie 6</p>
+  <h2 class="part-title">Méthode <span>TVA à payer</span></h2>
+
+  <div class="method-flow">
+    <div class="method-step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <div class="step-title">Calculer la TVA collectée sur les ventes</div>
+        Additionne la TVA facturée sur chaque ligne de vente. Si on connaît le CA HT et le taux : CA HT × taux.
+        <span class="step-formula">TVA collectée = CA HT × taux TVA</span>
+      </div>
+    </div>
+    <div class="arrow-down">↓</div>
+    <div class="method-step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <div class="step-title">Calculer la TVA déductible sur les achats</div>
+        Additionne la TVA sur chaque facture fournisseur. Si on connaît le montant HT et le taux : HT × taux.
+        <span class="step-formula">TVA déductible = Achats HT × taux TVA</span>
+      </div>
+    </div>
+    <div class="arrow-down">↓</div>
+    <div class="method-step">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <div class="step-title">Calculer la TVA à reverser à l'État</div>
+        Si le résultat est négatif, l'État rembourse (crédit de TVA).
+        <span class="step-formula">TVA à payer = TVA collectée − TVA déductible</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="tip">
+    <strong>💡 Astuce rapide :</strong> Si le sujet donne directement les montants de TVA, pas besoin de les recalculer. Additionne-les simplement colonne par colonne.
+  </div>
+</div>
+
+<!-- ─── SECTION 7 : exercice TVA ─── -->
+<div id="tva-ex" class="section">
+  <p class="part-label">Partie 7</p>
+  <h2 class="part-title">Exercice <span>TVA</span></h2>
+
+  <div class="exercise-card">
+    <div class="exercise-header">
+      <span class="ex-badge badge-hard">Niveau intermédiaire</span>
+      <div>
+        <div class="ex-title">Déclaration de TVA – boulangerie Au Pain Doré</div>
+        <div class="ex-context">Calcul de la TVA à reverser sur un mois</div>
+      </div>
+    </div>
+    <div class="exercise-body">
+      <div class="scenario-text">
+        <p>Pour le mois d'octobre, la boulangerie <strong>Au Pain Doré</strong> a réalisé les ventes et achats suivants.</p>
+        <p>Taux de TVA : <strong>5,5 %</strong> sur le pain et les viennoiseries, <strong>20 %</strong> sur les chocolats.</p>
+      </div>
+
+      <p style="font-weight:bold; font-size:.9rem; margin-bottom:.4rem; color:var(--brown-mid)">Ventes du mois (montants HT) :</p>
+      <table class="data-table">
+        <thead><tr><th>Produit</th><th>CA HT</th><th>Taux TVA</th></tr></thead>
+        <tbody>
+          <tr><td>Pain et baguettes</td><td class="calc-col">8 200 €</td><td class="calc-col">5,5 %</td></tr>
+          <tr><td>Viennoiseries</td><td class="calc-col">3 100 €</td><td class="calc-col">5,5 %</td></tr>
+          <tr><td>Chocolats de Noël</td><td class="calc-col">1 500 €</td><td class="calc-col">20 %</td></tr>
+        </tbody>
+      </table>
+
+      <p style="font-weight:bold; font-size:.9rem; margin:.8rem 0 .4rem; color:var(--brown-mid)">Achats du mois (montants HT) :</p>
+      <table class="data-table">
+        <thead><tr><th>Achat</th><th>Montant HT</th><th>Taux TVA</th></tr></thead>
+        <tbody>
+          <tr><td>Farine et ingrédients</td><td class="calc-col">2 800 €</td><td class="calc-col">5,5 %</td></tr>
+          <tr><td>Emballages et matériel</td><td class="calc-col">600 €</td><td class="calc-col">20 %</td></tr>
+        </tbody>
+      </table>
+
+      <div class="question-block">
+        <div class="question-label">Question 1</div>
+        <div class="question-text">Calculez la TVA collectée totale du mois d'octobre.</div>
+        <div class="answer-row">
+          <input type="number" class="answer-input" id="tvaq1-inp" placeholder="0,00" step="0.01">
+          <span class="answer-unit">€</span>
+        </div>
+        <div class="answer-feedback" id="tvaq1-fb"></div>
+      </div>
+
+      <div class="question-block">
+        <div class="question-label">Question 2</div>
+        <div class="question-text">Calculez la TVA déductible totale du mois d'octobre.</div>
+        <div class="answer-row">
+          <input type="number" class="answer-input" id="tvaq2-inp" placeholder="0,00" step="0.01">
+          <span class="answer-unit">€</span>
+        </div>
+        <div class="answer-feedback" id="tvaq2-fb"></div>
+      </div>
+
+      <div class="question-block">
+        <div class="question-label">Question 3</div>
+        <div class="question-text">Calculez la TVA à reverser à l'État pour octobre.</div>
+        <div class="answer-row">
+          <input type="number" class="answer-input" id="tvaq3-inp" placeholder="0,00" step="0.01">
+          <span class="answer-unit">€</span>
+        </div>
+        <div class="answer-feedback" id="tvaq3-fb"></div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-check" onclick="checkTva()">Vérifier mes réponses</button>
+        <button class="btn btn-reveal" onclick="revealTva()">Voir le corrigé</button>
+        <button class="btn btn-reset" onclick="resetTva()">Recommencer</button>
+      </div>
+
+      <table class="correction-table" id="correction-tva">
+        <thead><tr><th>Calcul</th><th>Opération</th><th>Montant</th></tr></thead>
+        <tbody>
+          <tr><td>TVA sur pain (5,5 %)</td><td class="calc-op">8 200 × 0,055</td><td>451,00 €</td></tr>
+          <tr><td>TVA sur viennoiseries (5,5 %)</td><td class="calc-op">3 100 × 0,055</td><td>170,50 €</td></tr>
+          <tr><td>TVA sur chocolats (20 %)</td><td class="calc-op">1 500 × 0,20</td><td>300,00 €</td></tr>
+          <tr><td>① TVA collectée</td><td class="calc-op">451 + 170,50 + 300</td><td>921,50 €</td></tr>
+          <tr><td>TVA sur farine (5,5 %)</td><td class="calc-op">2 800 × 0,055</td><td>154,00 €</td></tr>
+          <tr><td>TVA sur emballages (20 %)</td><td class="calc-op">600 × 0,20</td><td>120,00 €</td></tr>
+          <tr><td>② TVA déductible</td><td class="calc-op">154 + 120</td><td>274,00 €</td></tr>
+          <tr><td>③ TVA à payer (921,50 − 274)</td><td class="calc-op">921,50 − 274,00</td><td>647,50 €</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ─── SECTION 8 : résultat ─── -->
+<div id="resultat-ex" class="section">
+  <p class="part-label">Partie 8</p>
+  <h2 class="part-title">Le résultat <span>de l'entreprise</span></h2>
+
+  <div class="story-box">
+    <div class="story-icon">📊</div>
+    <p>À la fin de l'année, la boulangerie Au Pain Doré fait le bilan : a-t-elle gagné ou perdu de l'argent ? On calcule le <strong>résultat</strong>.</p>
+    <p><strong>Résultat = produits (recettes) − charges (dépenses)</strong></p>
+    <p>Si le résultat est positif → <em>bénéfice</em>. Si négatif → <em>déficit</em>.</p>
+  </div>
+
+  <div class="method-flow">
+    <div class="method-step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <div class="step-title">Identifier les produits (toutes les recettes)</div>
+        Chiffre d'affaires HT, produits financiers, produits exceptionnels…
+        <span class="step-formula">Total produits = CA HT + autres produits</span>
+      </div>
+    </div>
+    <div class="arrow-down">↓</div>
+    <div class="method-step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <div class="step-title">Identifier les charges (toutes les dépenses)</div>
+        Achats, salaires (coût employeur), loyer, énergie, amortissements…
+        <span class="step-formula">Total charges = achats + salaires + loyer + …</span>
+      </div>
+    </div>
+    <div class="arrow-down">↓</div>
+    <div class="method-step">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <div class="step-title">Calculer et interpréter le résultat</div>
+        Positive → bénéfice → l'entreprise est rentable. Conclure en une phrase.
+        <span class="step-formula">Résultat = Total produits − Total charges</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="exercise-card">
+    <div class="exercise-header">
+      <span class="ex-badge badge-hard">Niveau intermédiaire</span>
+      <div>
+        <div class="ex-title">Résultat annuel – Au Pain Doré</div>
+        <div class="ex-context">Calcul du résultat à partir des charges et produits</div>
+      </div>
+    </div>
+    <div class="exercise-body">
+      <div class="scenario-text">
+        <p>Pour l'exercice annuel, voici les données de la boulangerie Au Pain Doré :</p>
+      </div>
+
+      <table class="data-table">
+        <thead><tr><th>Produits</th><th>Montant HT</th></tr></thead>
+        <tbody>
+          <tr><td>Ventes de boulangerie</td><td class="calc-col">98 400 €</td></tr>
+          <tr><td>Ventes de pâtisserie</td><td class="calc-col">37 200 €</td></tr>
+          <tr><td>Ventes de traiteur</td><td class="calc-col">14 600 €</td></tr>
+        </tbody>
+      </table>
+
+      <table class="data-table" style="margin-top:.6rem">
+        <thead><tr><th>Charges</th><th>Montant</th></tr></thead>
+        <tbody>
+          <tr><td>Achats de matières premières</td><td class="calc-col">42 000 €</td></tr>
+          <tr><td>Salaires et charges sociales</td><td class="calc-col">51 300 €</td></tr>
+          <tr><td>Loyer</td><td class="calc-col">14 400 €</td></tr>
+          <tr><td>Énergie (gaz, électricité)</td><td class="calc-col">4 800 €</td></tr>
+          <tr><td>Amortissements matériel</td><td class="calc-col">6 200 €</td></tr>
+          <tr><td>Autres charges</td><td class="calc-col">8 100 €</td></tr>
+        </tbody>
+      </table>
+
+      <div class="question-block">
+        <div class="question-label">Question 1</div>
+        <div class="question-text">Calculez le chiffre d'affaires total HT.</div>
+        <div class="answer-row">
+          <input type="number" class="answer-input" id="resq1-inp" placeholder="0,00" step="0.01">
+          <span class="answer-unit">€ HT</span>
+        </div>
+        <div class="answer-feedback" id="resq1-fb"></div>
+      </div>
+
+      <div class="question-block">
+        <div class="question-label">Question 2</div>
+        <div class="question-text">Calculez le total des charges.</div>
+        <div class="answer-row">
+          <input type="number" class="answer-input" id="resq2-inp" placeholder="0,00" step="0.01">
+          <span class="answer-unit">€</span>
+        </div>
+        <div class="answer-feedback" id="resq2-fb"></div>
+      </div>
+
+      <div class="question-block">
+        <div class="question-label">Question 3</div>
+        <div class="question-text">Calculez le résultat de l'exercice. L'entreprise est-elle bénéficiaire ?</div>
+        <div class="answer-row">
+          <input type="number" class="answer-input" id="resq3-inp" placeholder="0,00" step="0.01">
+          <span class="answer-unit">€</span>
+        </div>
+        <div class="answer-feedback" id="resq3-fb"></div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-check" onclick="checkRes()">Vérifier mes réponses</button>
+        <button class="btn btn-reveal" onclick="revealRes()">Voir le corrigé</button>
+        <button class="btn btn-reset" onclick="resetRes()">Recommencer</button>
+      </div>
+
+      <table class="correction-table" id="correction-res">
+        <thead><tr><th>Calcul</th><th>Opération</th><th>Montant</th></tr></thead>
+        <tbody>
+          <tr><td>Ventes boulangerie</td><td class="calc-op">—</td><td>98 400 €</td></tr>
+          <tr><td>Ventes pâtisserie</td><td class="calc-op">—</td><td>37 200 €</td></tr>
+          <tr><td>Ventes traiteur</td><td class="calc-op">—</td><td>14 600 €</td></tr>
+          <tr><td>① CA total HT</td><td class="calc-op">98 400 + 37 200 + 14 600</td><td>150 200 €</td></tr>
+          <tr><td>② Total des charges</td><td class="calc-op">42 000 + 51 300 + 14 400 + 4 800 + 6 200 + 8 100</td><td>126 800 €</td></tr>
+          <tr><td>③ Résultat (bénéfice)</td><td class="calc-op">150 200 − 126 800</td><td>+ 23 400 € ✓ Bénéfice</td></tr>
+        </tbody>
+      </table>
+
+      <div class="conclusion-box" id="conclusion-res" style="display:none">
+        <strong>La phrase de conclusion à rédiger :</strong><br><br>
+        <em>« Le résultat de l'exercice est de 23 400 €. La boulangerie Au Pain Doré est bénéficiaire : elle a dégagé un bénéfice. Sa gestion est équilibrée. »</em>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── SECTION 9 : astuces ─── -->
+<div id="astuce" class="section">
+  <p class="part-label">Partie 9</p>
+  <h2 class="part-title">Les <span>astuces de vérification</span></h2>
+
+  <div class="story-box">
+    <div class="story-icon">🔍</div>
+    <p>Avant de rendre ta copie, pose-toi ces questions pour vérifier que tes calculs « tiennent la route ».</p>
+  </div>
+
+  <div class="formula-grid" style="grid-template-columns: repeat(auto-fit, minmax(260px, 1fr))">
+    <div class="formula-card" style="border-color:var(--green)">
+      <div class="fc-label" style="color:var(--green)">① Paie – contrôle</div>
+      <div class="fc-formula" style="color:var(--green)">Net &lt; Brut toujours</div>
+      <div class="fc-note">Si le net dépasse le brut, tu as fait une erreur de sens (soustraction / addition inversées).</div>
+    </div>
+    <div class="formula-card" style="border-color:var(--blue)">
+      <div class="fc-label" style="color:var(--blue)">② Paie – ordre de grandeur</div>
+      <div class="fc-formula" style="color:var(--blue)">Coût employeur ≈ 1,6 × brut</div>
+      <div class="fc-note">Avec 42 % de charges patronales, le coût total est environ 1,42 fois le brut. Au-delà de 2 fois, vérifie.</div>
+    </div>
+    <div class="formula-card" style="border-color:var(--orange)">
+      <div class="fc-label" style="color:var(--orange)">③ TVA – contrôle</div>
+      <div class="fc-formula" style="color:var(--orange)">TVA collectée &gt; déductible</div>
+      <div class="fc-note">En général, la boulangerie vend plus qu'elle n'achète. La TVA à payer doit être positive. Si elle est très négative, relis le sujet.</div>
+    </div>
+    <div class="formula-card" style="border-color:var(--brown-mid)">
+      <div class="fc-label" style="color:var(--brown-mid)">④ Résultat – sens</div>
+      <div class="fc-formula" style="color:var(--brown-mid)">Résultat = Produits − Charges</div>
+      <div class="fc-note">Ne pas inverser. Les produits = ce qu'on reçoit. Les charges = ce qu'on dépense.</div>
+    </div>
+  </div>
+
+  <div class="conclusion-box">
+    <strong>Les trois phrases de conclusion à retenir :</strong><br><br>
+    <em>Paie :</em> « Le salaire net de [prénom] s'élève à [montant] €. Le coût total pour l'employeur est de [montant] €. »<br><br>
+    <em>TVA :</em> « La TVA à reverser à l'État pour [mois] est de [montant] €. »<br><br>
+    <em>Résultat :</em> « Le résultat de l'exercice est de [montant] €. L'entreprise est [bénéficiaire / déficitaire]. »<br><br>
+    Ces phrases montrent que tu sais interpréter un chiffre, pas juste le calculer. C'est ce que le correcteur attend.
+  </div>
+
+  <div class="warn">
+    <strong>⚠️ Les pièges classiques à l'examen :</strong><br>
+    – Ne pas confondre brut et net.<br>
+    – Oublier de multiplier par le nombre de jours ou d'heures.<br>
+    – Confondre TVA collectée et déductible (sens inverse).<br>
+    – Oublier un poste de charge dans le calcul du résultat.<br>
+    – Travailler en TTC au lieu de HT pour le résultat et la TVA.
+  </div>
+</div>
+
+</main>
+
+<footer>
+  Bac Pro Boulanger Pâtissier – U.31 – S5.4.1 Calcul de paie · S5.4.2 TVA et résultat<br>
+  Page de révision – usage pédagogique
+</footer>
+
+<script>
+/* ── Navigation ── */
+function showSection(id, btn) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-pill').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  if (btn) btn.classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+/* ── Tolerance helper ── */
+function near(val, target, tol) {
+  return Math.abs(val - target) <= tol;
+}
+
+/* ── Feedback ── */
+function setFb(id, ok, msg) {
+  const el = document.getElementById(id + '-fb');
+  if (!el) return;
+  el.className = 'answer-feedback ' + (ok ? 'ok' : 'ko');
+  el.textContent = ok ? '✓ ' + msg : '✗ ' + msg;
+}
+
+/* ── EX 1 ── */
+const E1 = {
+  brut: 151.67 * 12.50, // 1895.875 → 1895.88
+  get cotSal() { return this.brut * 0.22; },
+  get net() { return this.brut - this.cotSal; },
+  get cotPat() { return this.brut * 0.42; },
+  get cout() { return this.brut + this.cotPat; }
+};
+
+function checkEx1() {
+  const vals = [
+    { id: 'e1q1', target: Math.round(E1.brut * 100) / 100, label: '1 895,88 €' },
+    { id: 'e1q2', target: Math.round(E1.cotSal * 100) / 100, label: '417,09 €' },
+    { id: 'e1q3', target: Math.round(E1.net * 100) / 100, label: '1 478,79 €' },
+    { id: 'e1q4', target: Math.round(E1.cout * 100) / 100, label: '2 692,15 €' },
+  ];
+  vals.forEach(v => {
+    const inp = parseFloat(document.getElementById(v.id + '-inp').value);
+    if (isNaN(inp)) { setFb(v.id, false, 'Entre une valeur.'); return; }
+    setFb(v.id, near(inp, v.target, 0.05), near(inp, v.target, 0.05) ? 'Correct !' : 'Incorrect. Résultat attendu : ' + v.label);
+  });
+}
+function revealEx1() {
+  document.getElementById('correction-ex1').classList.add('visible');
+}
+function resetEx1() {
+  ['e1q1','e1q2','e1q3','e1q4'].forEach(id => {
+    document.getElementById(id + '-inp').value = '';
+    const fb = document.getElementById(id + '-fb');
+    if (fb) { fb.className = 'answer-feedback'; fb.textContent = ''; }
+  });
+  document.getElementById('correction-ex1').classList.remove('visible');
+}
+
+/* ── EX 2 ── */
+const E2 = {
+  b1: Math.round(151.67 * 12.50 * 100) / 100,
+  b2: Math.round(151.67 * 13.20 * 100) / 100,
+  b3: Math.round(151.67 * 7.80 * 100) / 100,
+  get total() { return Math.round((this.b1 + this.b2 + this.b3) * 100) / 100; },
+  get cotSal() { return Math.round(this.total * 0.22 * 100) / 100; },
+  get net() { return Math.round((this.total - this.cotSal) * 100) / 100; },
+  get cotPat() { return Math.round(this.total * 0.42 * 100) / 100; },
+  get cout() { return Math.round((this.total + this.cotPat) * 100) / 100; }
+};
+
+function checkEx2() {
+  const vals = [
+    { id: 'e2q1', target: E2.total, label: E2.total + ' €' },
+    { id: 'e2q2', target: E2.cotSal, label: E2.cotSal + ' €' },
+    { id: 'e2q3', target: E2.net, label: E2.net + ' €' },
+    { id: 'e2q4', target: E2.cout, label: E2.cout + ' €' },
+  ];
+  vals.forEach(v => {
+    const inp = parseFloat(document.getElementById(v.id + '-inp').value);
+    if (isNaN(inp)) { setFb(v.id, false, 'Entre une valeur.'); return; }
+    setFb(v.id, near(inp, v.target, 0.10), near(inp, v.target, 0.10) ? 'Correct !' : 'Incorrect. Résultat attendu : ' + v.label);
+  });
+}
+function revealEx2() { document.getElementById('correction-ex2').classList.add('visible'); }
+function resetEx2() {
+  ['e2q1','e2q2','e2q3','e2q4'].forEach(id => {
+    document.getElementById(id + '-inp').value = '';
+    const fb = document.getElementById(id + '-fb');
+    if (fb) { fb.className = 'answer-feedback'; fb.textContent = ''; }
+  });
+  document.getElementById('correction-ex2').classList.remove('visible');
+}
+
+/* ── TVA ── */
+const TVA = {
+  c1: 8200 * 0.055, c2: 3100 * 0.055, c3: 1500 * 0.20,
+  get collectee() { return Math.round((this.c1 + this.c2 + this.c3) * 100) / 100; },
+  d1: 2800 * 0.055, d2: 600 * 0.20,
+  get deductible() { return Math.round((this.d1 + this.d2) * 100) / 100; },
+  get apayer() { return Math.round((this.collectee - this.deductible) * 100) / 100; }
+};
+
+function checkTva() {
+  const vals = [
+    { id: 'tvaq1', target: TVA.collectee, label: TVA.collectee + ' €' },
+    { id: 'tvaq2', target: TVA.deductible, label: TVA.deductible + ' €' },
+    { id: 'tvaq3', target: TVA.apayer, label: TVA.apayer + ' €' },
+  ];
+  vals.forEach(v => {
+    const inp = parseFloat(document.getElementById(v.id + '-inp').value);
+    if (isNaN(inp)) { setFb(v.id, false, 'Entre une valeur.'); return; }
+    setFb(v.id, near(inp, v.target, 0.05), near(inp, v.target, 0.05) ? 'Correct !' : 'Incorrect. Résultat attendu : ' + v.label);
+  });
+}
+function revealTva() { document.getElementById('correction-tva').classList.add('visible'); }
+function resetTva() {
+  ['tvaq1','tvaq2','tvaq3'].forEach(id => {
+    document.getElementById(id + '-inp').value = '';
+    const fb = document.getElementById(id + '-fb');
+    if (fb) { fb.className = 'answer-feedback'; fb.textContent = ''; }
+  });
+  document.getElementById('correction-tva').classList.remove('visible');
+}
+
+/* ── Résultat ── */
+const RES = {
+  ca: 98400 + 37200 + 14600,
+  charges: 42000 + 51300 + 14400 + 4800 + 6200 + 8100,
+  get resultat() { return this.ca - this.charges; }
+};
+
+function checkRes() {
+  const vals = [
+    { id: 'resq1', target: RES.ca, label: RES.ca + ' €' },
+    { id: 'resq2', target: RES.charges, label: RES.charges + ' €' },
+    { id: 'resq3', target: RES.resultat, label: '+' + RES.resultat + ' €' },
+  ];
+  vals.forEach(v => {
+    const inp = parseFloat(document.getElementById(v.id + '-inp').value);
+    if (isNaN(inp)) { setFb(v.id, false, 'Entre une valeur.'); return; }
+    setFb(v.id, near(inp, v.target, 1), near(inp, v.target, 1) ? 'Correct !' : 'Incorrect. Résultat attendu : ' + v.label);
+  });
+}
+function revealRes() {
+  document.getElementById('correction-res').classList.add('visible');
+  document.getElementById('conclusion-res').style.display = 'block';
+}
+function resetRes() {
+  ['resq1','resq2','resq3'].forEach(id => {
+    document.getElementById(id + '-inp').value = '';
+    const fb = document.getElementById(id + '-fb');
+    if (fb) { fb.className = 'answer-feedback'; fb.textContent = ''; }
+  });
+  document.getElementById('correction-res').classList.remove('visible');
+  document.getElementById('conclusion-res').style.display = 'none';
+}
+</script>
+</body>
+</html>
